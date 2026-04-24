@@ -266,7 +266,6 @@ footer {
     border-top: 1px solid #e5e5e5;
     color: #000;
     font-family: 'Poppins', sans-serif;
-    overflow-x: hidden;
 }
 
 /* ===== TITLES LINE (9ad kalma mashi l7ad center) ===== */
@@ -455,7 +454,7 @@ footer p {
     background: #000;
     text-align: center;
     padding: 15px;
-    margin-top: 0; /* مهم */
+    margin-top: 50px;
     font-size: 13px;
     color: #fff;
     letter-spacing: 0.5px;
@@ -464,7 +463,6 @@ footer p {
 
 
     </style>
-    @stack('styles')
 </head>
 
 <body>
@@ -607,16 +605,19 @@ footer p {
     </footer>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-     <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            const btn = document.getElementById("searchToggle");
-            const bar = document.getElementById("searchBar");
 
-            btn?.addEventListener("click", () => {
-                bar.classList.toggle("d-none");
-            });
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+    let btn = document.getElementById("searchToggle");
+    let bar = document.getElementById("searchBar");
+
+    if (btn && bar) {
+        btn.addEventListener("click", function () {
+            bar.style.display = (bar.style.display === "block") ? "none" : "block";
         });
-    </script>
+    }
+});
+        </script>
 
     @stack('scripts')
 
