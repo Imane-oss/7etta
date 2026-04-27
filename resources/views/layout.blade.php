@@ -179,6 +179,70 @@
             color: #000;
         }
 
+        /* Profile Dropdown Styling */
+        .dropdown-menu {
+            border-radius: 12px !important;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+            border: 1px solid rgba(0,0,0,0.05) !important;
+            animation: fadeInDropdown 0.2s ease-out;
+            padding: 8px 0;
+        }
+
+        .dropdown-item {
+            font-size: 14px;
+            font-weight: 500;
+            padding: 10px 20px;
+            color: #333;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            color: #000;
+            transform: translateX(4px);
+        }
+
+        .dropdown-item i {
+            color: #666;
+            transition: color 0.2s;
+            font-size: 16px;
+        }
+
+        .dropdown-item:hover i {
+            color: #000;
+        }
+
+        .dropdown-item.text-danger:hover {
+            background-color: #fff1f0;
+            color: #dc3545 !important;
+        }
+
+        .dropdown-item.text-danger:hover i {
+            color: #dc3545 !important;
+        }
+
+        .dropdown-header {
+            padding: 8px 20px 4px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #999;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        @keyframes fadeInDropdown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* Sidebar Styling  */
         .offcanvas {
             width: 320px !important;
@@ -491,7 +555,45 @@ footer p {
                     <button class="nav-icon-btn d-none d-md-block" id="searchToggle">
                         <i class="bi bi-search fs-5"></i>
                     </button>
-                    <a href="#" class="nav-icon-btn d-none d-md-block sign-in-btn">Sign in</a>
+
+                    @auth
+                        {{-- Admin Store Manager Button --}}
+                        @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') || (isset(Auth::user()->role) && Auth::user()->role === 'admin') || (isset(Auth::user()->is_admin) && Auth::user()->is_admin) || Auth::user()->email === 'admin@admin.com')
+                            <a href="{{ url('/admin/dashboard') }}" class="nav-icon-btn custom-tooltip d-none d-md-block" data-tooltip="Store Manager">
+                                <i class="bi bi-shop fs-5"></i>
+                            </a>
+                        @endif
+
+                        <div class="dropdown d-none d-md-block">
+                            <button class="nav-icon-btn dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; color: #fff;">
+                                <i class="bi bi-person fs-5"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end mt-2">
+                                <li>
+                                    <div class="px-3 py-2">
+                                        <span class="d-block fw-bold text-dark" style="font-size: 14px;">{{ Auth::user()->name ?? 'User' }}</span>
+                                        <span class="text-muted small">{{ Auth::user()->email ?? '' }}</span>
+                                    </div>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{{ url('/profile') }}"><i class="bi bi-person me-2"></i> My Profile</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/orders') }}"><i class="bi bi-box-seam me-2"></i> My Orders</a></li>
+                                
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{{ route('logout') ?? url('/logout') }}">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    @else
+                        <a href="{{ url('/login') }}" class="nav-icon-btn custom-tooltip d-none d-md-block" data-tooltip="Sign In">
+                            <i class="bi bi-person fs-5"></i>
+                        </a>
+                    @endauth
+
                     <a href="#" class="nav-icon-btn custom-tooltip" data-tooltip="Favorites">
                         <i class="bi bi-heart fs-5"></i>
                     </a>
