@@ -682,7 +682,7 @@ footer p {
                     <div class="col-lg-4 text-center mb-4">
                         <h5 class="information-title">Information</h5>
                         <ul class="information list-unstyled">
-                            <li><a href="">Contact</a></li>
+                            <li><a href="{{ url('/contact') }}">Contact</a></li>
                             <li><a href="{{ url('/about-us') }}">About Us</a></li>
                             <li><a href="{{ url('/FAQ') }}">FAQ</a></li>
                             <li><a href="{{ url('/retour') }}">PORTAIL DE RETOUR ET D'ECHANGE</a></li>

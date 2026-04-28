@@ -157,7 +157,7 @@
                             <div class="text-center mb-5">
                                 <h2 class="auth-title mb-3">Reset Password</h2>
                                 <p class="text-muted" style="line-height: 1.6;">
-                                    Forgot your password? No problem. Just let us know your email address and we will email you a password reset link.
+                                    Forgot your password? No problem Just let us know your email address and we will email you a password reset link.
                                 </p>
                             </div>
 
