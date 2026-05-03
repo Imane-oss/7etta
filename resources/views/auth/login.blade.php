@@ -183,7 +183,7 @@
                     <div class="auth-card">
                         <div class="auth-card-body">
                             <div class="text-center mb-5">
-                                <h2 class="auth-title mb-2">Welcome Back</h2>
+                                <h2 class="auth-title mb-2">Welcome</h2>
                                 <p class="text-muted">Sign in to continue to 7ETTA</p>
                             </div>
 

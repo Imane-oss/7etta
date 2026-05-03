@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Mail\ContactMail;
 use Illuminate\Support\Facades\Mail;
+use Resend\Laravel\Facades\Resend;
 
 class ContactController extends Controller
 {
@@ -22,16 +23,26 @@ class ContactController extends Controller
             'message' => 'required|string|max:5000',
         ]);
 
-        // 2. Send email — wrapped in try/catch to prevent crashes
         try {
-            Mail::to('7etta26@gmail.com')->send(new ContactMail($validated));
+            // 2. Send email using Resend Facade
+            Resend::emails()->send([
+                'from' => '7ETTA <contact@7etta.com>',
+                'to' => ['7etta26@gmail.com'],
+                'subject' => '[Contact Form] ' . $validated['subject'],
+                'html' => view('emails.contact', [
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'subject' => $validated['subject'],
+                    'body' => $validated['message'],
+                ])->render(),
+            ]);
 
-            return back()->with('success', '✅ Your message has been sent successfully! We\'ll get back to you within 24 hours.');
+            return back()->with('success', '✅ Message sent successfully via Resend!');
 
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', '❌ Something went wrong while sending your message. Please try again later or contact us directly by email.');
+                ->with('error', '❌ Email failed: ' . $e->getMessage());
         }
     }
 }

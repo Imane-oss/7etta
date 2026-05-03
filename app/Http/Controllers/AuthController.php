@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Auth\Events\Registered;
 
 class AuthController extends Controller
 {
@@ -30,7 +31,11 @@ class AuthController extends Controller
             'role' => 'user', // Force role to user
         ]);
 
-        return redirect()->route('login')->with('success', 'Account created successfully! Please sign in.');
+        event(new Registered($user));
+
+        Auth::login($user);
+
+        return redirect()->route('verification.notice');
     }
 
     public function showLoginForm()

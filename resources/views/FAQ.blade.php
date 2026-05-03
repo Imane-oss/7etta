@@ -212,7 +212,7 @@ body {
      <!-- btn-contact -->
        <div class="cta-footer">
             <p>Didn't find an answer to your question?</p>
-            <a href="Contact.php" class="btn-contact">Contact Customer Service</a>
+            <a href="{{ url('/contact') }}" class="btn-contact">Contact Customer Service</a>
         </div>
 
 @endsection

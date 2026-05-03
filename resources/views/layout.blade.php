@@ -697,7 +697,7 @@ footer p {
                             <i class="bi bi-envelope"></i> 7etta.com
                         </a>
                     </div>
-
+ 
                 </div>
             </div>
 
