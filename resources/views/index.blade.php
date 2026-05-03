@@ -65,7 +65,7 @@
 
     <!-- ===== PROMO BANNER ===== -->
     <div class="promo-banner">
-        <img src="{{ asset('images/banner2.png') }}" alt="Promo Banner">
+        <img src="{{ asset('images/banner.png') }}" alt="Promo Banner">
         <div class="promo-content">
             <h2>STREETWEAR COLLECTION</h2>
             <a href="#" class="btn">SHOP NOW</a>

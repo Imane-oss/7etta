@@ -1,17 +1,84 @@
 <?php
-use App\Http\Controllers\StorefrontController;
+
+use App\Models\Product;
+
+use App\Models\Category;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ContactController;
 
+$databaseAvailable = function (): bool {
+    if (config('database.default') !== 'mysql') {
+        return true;
+    }
+
+    $host = (string) config('database.connections.mysql.host', '127.0.0.1');
+    $port = (int) config('database.connections.mysql.port', 3306);
+
+    $connection = @fsockopen($host, $port, $errorCode, $errorMessage, 0.25);
+
+    if (! $connection) {
+        return false;
+    }
+
+    fclose($connection);
+
+    return true;
+};
+
 // General Pages
-Route::get('/', [StorefrontController::class, 'index']);
-Route::get('/caps', [StorefrontController::class, 'caps']);
-Route::get('/t-shirts', [StorefrontController::class, 'tshirts']);
-Route::get('/hoodies', [StorefrontController::class, 'hoodies']);
-Route::get('/pants', [StorefrontController::class, 'pants']);
-Route::get('/shoes', [StorefrontController::class, 'shoes']);
+Route::get('/', function () use ($databaseAvailable) {
+    if ($databaseAvailable()) {
+        $featuredProducts = Product::query()->latest('created_at')->take(8)->get();
+        $categories = Category::with(['products' => fn($q) => $q->latest('created_at')->take(4)])->get();
+    } else {
+        $featuredProducts = collect();
+        $categories = collect();
+    }
+
+    return view('index', [
+        'categories' => $categories,
+        'featuredProducts' => $featuredProducts,
+        'heroProduct' => $featuredProducts->first(),
+    ]);
+})->name('home');
+
+// Helper for category routes
+$categoryView = function (string $categoryName) use ($databaseAvailable) {
+    if (! $databaseAvailable()) {
+        abort(503, 'Database service is unavailable.');
+    }
+
+    $category = Category::where('name', $categoryName)->first();
+    $products = $category 
+        ? $category->products()->latest('created_at')->paginate(12)
+        : collect();
+
+    $viewName = Str::of($categoryName)->lower()->replace(' ', '-')->toString();
+
+    if (view()->exists($viewName)) {
+        return view($viewName, [
+            'category' => $category,
+            'categoryName' => $categoryName,
+            'products' => $products,
+        ]);
+    }
+
+    return view('shop.category', [
+        'category' => $category,
+        'categoryName' => $categoryName,
+        'products' => $products,
+    ]);
+};
+
+Route::get('/caps', fn() => $categoryView('Caps'));
+Route::get('/t-shirts', fn() => $categoryView('T-shirts'));
+Route::get('/hoodies', fn() => $categoryView('Hoodies'));
+Route::get('/pants', fn() => $categoryView('Pants'));
+Route::get('/shoes', fn() => $categoryView('Shoes'));
+
 
 Route::get('/layout', function () {
     return view('layout');

@@ -14,6 +14,10 @@ class AuthController extends Controller
     {
         return view('auth.sign-up');
     }
+    public function caps()
+    {
+        return view('caps');
+    }
 
     public function register(Request $request)
     {
