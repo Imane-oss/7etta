@@ -11,6 +11,8 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 
 $databaseAvailable = function (): bool {
     if (config('database.default') !== 'mysql') {
@@ -34,7 +36,7 @@ $databaseAvailable = function (): bool {
 // General Pages
 Route::get('/', function () use ($databaseAvailable) {
     if ($databaseAvailable()) {
-        $featuredProducts = Product::query()->latest('created_at')->take(8)->get();
+        $featuredProducts = Product::query()->latest('created_at')->take(16)->get();
         $categories = Category::with(['products' => fn($q) => $q->latest('created_at')->take(4)])->get();
     } else {
         $featuredProducts = collect();
@@ -47,6 +49,12 @@ Route::get('/', function () use ($databaseAvailable) {
         'heroProduct' => $featuredProducts->first(),
     ]);
 })->name('home');
+
+// Product Detail Page
+Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
+
+// Cart Routes
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
 
 // Helper for category routes
 $categoryView = function (string $categoryName) use ($databaseAvailable) {

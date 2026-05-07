@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', '7ETTA - Caps')
+@section('title', '7ETTA - T-Shirts')
 
 @push('styles')
     @vite('resources/css/index.css')
@@ -8,22 +8,22 @@
 
 @section('content')
     <div class="promo-banner">
-        <img src="{{ asset('images/banner.png') }}" alt="Caps Collection">
+        <img src="{{ asset('images/banner.png') }}" alt="T-Shirts Collection">
         <div class="promo-content">
-            <h2>{{ $category?->name ?? 'Caps Collection' }}</h2>
-            <a href="#caps-products" class="btn">SHOP NOW</a>
+            <h2>{{ $category?->name ?? 'T-Shirts Collection' }}</h2>
+            <a href="#tshirts-products" class="btn">SHOP NOW</a>
         </div>
     </div>
 
     <div class="info-section text-center">
-        <h2>{{ $category?->name ?? 'Caps' }}</h2>
+        <h2>{{ $category?->name ?? 'T-Shirts' }}</h2>
         <p>
-            Découvrez notre sélection de casquettes 7ETTA avec une identité streetwear nette,
-            des finitions premium et un style pensé pour tous les jours.
+            Découvrez notre sélection de t-shirts 7ETTA, pensée pour un look premium,
+            des coupes nettes et un confort facile à porter tous les jours.
         </p>
     </div>
 
-    <div class="container my-5" id="caps-products">
+    <div class="container my-5" id="tshirts-products">
         @if ($products->count() > 0)
             <div class="row g-4">
                 @foreach ($products as $product)
@@ -48,9 +48,9 @@
             @endif
         @elseif ($category)
             <div class="text-center py-5">
-                <h2 class="h4 mb-3">Aucune casquette disponible</h2>
+                <h2 class="h4 mb-3">Aucun t-shirt disponible</h2>
                 <p class="text-muted mb-0">
-                    Les produits caps apparaîtront ici dès qu'ils seront ajoutés.
+                    Les produits t-shirts apparaîtront ici dès qu'ils seront ajoutés.
                 </p>
             </div>
         @else
