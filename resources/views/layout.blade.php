@@ -44,7 +44,7 @@
 
                     @auth
                         {{-- Admin Store Manager Button --}}
-                        @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') || (isset(Auth::user()->role) && Auth::user()->role === 'admin') || (isset(Auth::user()->is_admin) && Auth::user()->is_admin) || Auth::user()->email === 'admin@admin.com')
+                        @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') || (isset(Auth::user()->role) && Auth::user()->role === 'admin') || (isset(Auth::user()->is_admin) && Auth::user()->is_admin) || Auth::user()->email === 'admin@gmail.com')
                             <a href="{{ url('/admin/dashboard') }}" class="nav-icon-btn custom-tooltip d-none d-md-block" data-tooltip="Store Manager">
                                 <i class="bi bi-shop fs-5"></i>
                             </a>

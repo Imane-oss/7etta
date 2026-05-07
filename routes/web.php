@@ -10,6 +10,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\EmailVerificationController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\AdminController;
 
 $databaseAvailable = function (): bool {
     if (config('database.default') !== 'mysql') {
@@ -126,15 +127,20 @@ Route::post('/email/verification-notification', [EmailVerificationController::cl
 
 // Protected Admin Routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
 
-    Route::get('/products', function () {
-        return view('admin.products.index');
-    })->name('admin.products');
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
 
-    Route::get('/products/create', function () {
-        return view('admin.products.create');
-    })->name('admin.products.create');
+    Route::get('/products', [AdminController::class, 'products'])->name('admin.products');
+    Route::post('/products', [AdminController::class, 'storeProduct'])->name('admin.products.store');
+    Route::put('/products/{id}', [AdminController::class, 'updateProduct'])->name('admin.products.update');
+    Route::delete('/products/{id}', [AdminController::class, 'deleteProduct'])->name('admin.products.destroy');
+
+    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('admin.categories.store');
+    Route::delete('/categories/{id}', [AdminController::class, 'deleteCategory'])->name('admin.categories.destroy');
+
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+
+    Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
+    Route::put('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('admin.orders.status');
 });
