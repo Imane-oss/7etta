@@ -1,6 +1,6 @@
 @extends('layout')
 
-@section('title', '7ETTA - Pants')
+@section('title', '7ETTA - Hoodies')
 
 @push('styles')
     @vite('resources/css/index.css')
@@ -11,10 +11,11 @@
         <div class="container">
             <div class="text-center mb-5">
                 <p class="text-uppercase text-muted mb-2">Collection</p>
-                <h1 class="section-title mb-3">{{ $category?->name ?? 'Pants' }}</h1>
+                <h1 class="section-title mb-3">{{ $category?->name ?? 'Hoodies' }}</h1>
 
                 <p class="mx-auto" style="max-width: 640px;">
-                    Découvrez notre sélection de pants 7ETTA, pensée pour allier confort, coupe moderne et style premium.
+                    Découvrez nos hoodies 7ETTA pensés pour superposer facilement style urbain,
+                    chaleur et finitions premium dans une seule pièce forte.
                 </p>
             </div>
 
@@ -40,11 +41,18 @@
                         {{ $products->links() }}
                     </div>
                 @endif
+            @elseif ($category)
+                <div class="text-center py-5">
+                    <h2 class="h4 mb-3">Aucun hoodie disponible</h2>
+                    <p class="text-muted mb-0">
+                        Les produits hoodies apparaîtront ici dès qu'ils seront ajoutés.
+                    </p>
+                </div>
             @else
                 <div class="text-center py-5">
-                    <h2 class="h4 mb-3">Aucun pantalon disponible</h2>
+                    <h2 class="h4 mb-3">Catégorie introuvable</h2>
                     <p class="text-muted mb-0">
-                        Les produits pants apparaîtront ici dès qu'ils seront ajoutés.
+                        La catégorie "{{ $categoryName }}" n'a pas été trouvée.
                     </p>
                 </div>
             @endif

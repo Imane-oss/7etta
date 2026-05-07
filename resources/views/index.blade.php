@@ -6,27 +6,21 @@
     @vite('resources/css/index.css')
 @endpush
 
-@section('content')
+@push('scripts')
+    @vite('resources/js/app.js')
+@endpush
 
-    <!-- ===== CAROUSEL ===== -->
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+
+@section('content')
+    <div id="carouselExampleSlidesOnly" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
             <div class="carousel-item active">
-                <img src="{{ asset('images/ted.png') }}" class="d-block w-100" alt="Hero 1">
+                <img src="{{ asset('images/ted.png') }}" class="d-block w-100" alt="mkynch tswira">
             </div>
             <div class="carousel-item">
-                <img src="{{ asset('images/fig.png') }}" class="d-block w-100" alt="Hero 2">
+                <img src="{{ asset('images/fig.png') }}" class="d-block w-100" alt="ml9itx fig">
             </div>
         </div>
-
-        <button class="carousel-control-prev" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </button>
-        <button class="carousel-control-next" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </button>
-
-        <div class="scroll-down">↓</div>
     </div>
 
     <!-- ===== FEATURED PRODUCT ===== -->
@@ -40,7 +34,7 @@
 
             <div class="col-md-6">
                 <h2 class="product-title">7ETTA Graphic T-Shirt</h2>
-                <div class="price">399.00 dh</div>
+                <div class="price">850 dh</div>
 
                 <select class="form-select mb-3">
                     <option>S</option>
@@ -55,9 +49,11 @@
                     Premium streetwear t-shirt designed for bold style and comfort.
                 </p>
 
-                <div class="thumbs mt-3">
+                <div class="thumbs mt-3" id="zoomBox">
                     <img src="{{ asset('images/jlaba1.png') }}" onclick="changeImage(this)" alt="Thumb 1">
                     <img src="{{ asset('images/jlaba2.png') }}" onclick="changeImage(this)" alt="Thumb 2">
+                    <img src="{{ asset('images/jlaba3.png') }}" onclick="changeImage(this)" alt="Thumb 3">
+                    <img src="{{ asset('images/jlaba4.png') }}" onclick="changeImage(this)" alt="Thumb 4">
                 </div>
             </div>
         </div>
@@ -85,16 +81,10 @@
     <!-- ===== DYNAMIC PRODUCT GRID ===== -->
     <div class="container my-5">
         <div class="row g-4">
-            @forelse($featuredProducts as $product)
-                <div class="col-lg-3 col-md-4 col-6">
-                    <x-product-card 
-                        :imageDefault="$product->image_url ?? 'images/ted.png'" 
-                        :imageHover="$product->image_url ?? 'images/fig.png'" 
-                        :title="$product->name_product" 
-                        :price="$product->price . ' dh'"
-                        :soldOut="$product->stock_quantity <= 0"
-                        :soldOutText="'ÉPUISÉ'"
-                    />
+            @forelse($featuredProducts->take(4) as $product)
+                <div class="col-lg-3 col-md-6 col-6">
+                    <x-product-card :imageDefault="$product->image_url ?? 'images/shoes.png'" :imageHover="$product->image_hover_url ?? 'images/fig.png'" :title="$product->name_product" :price="$product->price . ' dh'"
+                        :soldOut="$product->stock_quantity <= 0" :soldOutText="'ÉPUISÉ'" :slug="$product->slug" />
                 </div>
             @empty
                 <div class="col-12 text-center">
@@ -124,110 +114,25 @@
         </div>
     </div>
 
-    <!-- ===== CATEGORY SECTION ===== -->
-    <div class="container my-5">
-        <div class="row">
-            <div class="col-md-4 d-flex align-items-start">
-                <h2 class="section-title">OCM T-Shirts</h2>
-            </div>
-
-            <div class="col-md-8">
-                <div class="row g-4">
-                    <div class="col-md-6 col-6">
-                        <x-product-card 
-                            imageDefault="images/ted.png" 
-                            imageHover="images/fig.png" 
-                            title="T-SHIRT | NEW ERA NY GREY" 
-                            price="399.00 dh"
-                            :soldOut="true"
-                            soldOutText="ÉPUISÉ"
+    <!-- ===== MORE PRODUCTS ===== -->
+    @if($featuredProducts->skip(4)->count() > 0)
+        <div class="container my-5">
+            <div class="row g-4">
+                @foreach($featuredProducts->skip(4)->take(12) as $product)
+                    <div class="col-lg-3 col-md-4 col-6">
+                        <x-product-card
+                            :imageDefault="$product->image_url ?? 'images/shoes.png'"
+                            :imageHover="$product->image_hover_url ?? 'images/fig.png'"
+                            :title="$product->name_product"
+                            :price="$product->price . ' dh'"
+                            :soldOut="$product->stock_quantity <= 0"
+                            :soldOutText="'ÉPUISÉ'"
+                            :slug="$product->slug"
                         />
                     </div>
-                    <div class="col-md-6 col-6">
-                        <x-product-card 
-                            imageDefault="images/ted.png" 
-                            imageHover="images/fig.png" 
-                            title="Tee Shirt NY Black" 
-                            price="399.00 dh"
-                            :soldOut="true"
-                            soldOutText="ÉPUISÉ"
-                        />
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
-    </div>
-    <div class="container product-section">
-  <div class="row product-row">
-
-    <div class="col-lg-3 col-md-4 col-6">
-      <div class="product-card">
-
-        <div class="product-image">
-          <img src="images/ted.png" class="img-default">
-          <img src="images/fig.png" class="img-hover">
-          <span class="sold-out">ÉPUISÉ</span>
-        </div>
-
-        <p class="title">Product name</p>
-        <p class="price">349.00 dh</p>
-
-      </div>
-    </div>
-     <div class="col-lg-3 col-md-4 col-6">
-      <div class="product-card">
-
-        <div class="product-image">
-          <img src="images/ted.png" class="img-default">
-          <img src="images/fig.png" class="img-hover">
-          <span class="sold-out">ÉPUISÉ</span>
-        </div>
-
-        <p class="title">Product name</p>
-        <p class="price">349.00 dh</p>
-
-      </div>
-    </div>
-     <div class="col-lg-3 col-md-4 col-6">
-      <div class="product-card">
-
-        <div class="product-image">
-          <img src="images/ted.png" class="img-default">
-          <img src="images/fig.png" class="img-hover">
-          <span class="sold-out">ÉPUISÉ</span>
-        </div>
-
-        <p class="title">Product name</p>
-        <p class="price">349.00 dh</p>
-
-      </div>
-    </div>
-     <div class="col-lg-3 col-md-4 col-6">
-      <div class="product-card">
-
-        <div class="product-image">
-          <img src="images/ted.png" class="img-default">
-          <img src="images/fig.png" class="img-hover">
-          <span class="sold-out">ÉPUISÉ</span>
-        </div>
-
-        <p class="title">Product name</p>
-        <p class="price">349.00 dh</p>
-
-      </div>
-    </div>
-
-    
-
-  </div>
-</div>
+    @endif
 
 @endsection
-
-@push('scripts')
-    <script>
-        function changeImage(el) {
-            document.getElementById("mainProductImage").src = el.src;
-        }
-    </script>
-@endpush
