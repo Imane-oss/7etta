@@ -88,6 +88,11 @@ class AdminController extends Controller
             }
         }
 
+        // Add default values for mandatory fields if missing
+        $data['color'] = $request->color ?? 'Default';
+        $data['size'] = $request->size ?? 'Standard';
+        $data['image_url'] = $data['image_url'] ?? '/images/default-product.png';
+
         Product::create($data);
 
         return redirect()->route('admin.products')->with('success', 'Product added successfully.');
@@ -127,6 +132,9 @@ class AdminController extends Controller
                 }
             }
         }
+
+        if ($request->has('color')) $data['color'] = $request->color;
+        if ($request->has('size')) $data['size'] = $request->size;
 
         $product->update($data);
 

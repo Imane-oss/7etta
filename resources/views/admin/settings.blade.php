@@ -115,18 +115,6 @@
                         <div>
                             <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-4">Active Payment Methods</label>
                             <div class="flex flex-wrap gap-6">
-                                <label class="flex items-center cursor-pointer group">
-                                    <div class="relative">
-                                        <input type="checkbox" class="sr-only peer" checked>
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600 group-hover:bg-gray-300 peer-checked:group-hover:bg-blue-700 transition-colors"></div>
-                                    </div>
-                                    <div class="ml-3 flex items-center gap-2">
-                                        <div class="h-6 w-10 bg-[#635BFF] rounded flex items-center justify-center shadow-sm">
-                                            <i class="bi bi-stripe text-white text-xs"></i>
-                                        </div>
-                                        <span class="text-sm font-medium text-gray-700">Stripe</span>
-                                    </div>
-                                </label>
                                 
                                 <label class="flex items-center cursor-pointer group">
                                     <div class="relative">
@@ -188,7 +176,7 @@
                             </div>
                         </div>
                         <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center">
-                            <span class="font-bold text-xl tracking-tight text-gray-900">AdminPro</span>
+                            <span class="font-bold text-xl tracking-tight text-gray-900">Admin</span>
                         </div>
                     </div>
                 </div>

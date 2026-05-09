@@ -3,7 +3,7 @@
 @section('title', 'Products Management')
 
 @section('content')
-<div x-data="{ addProductModalOpen: false, manageCategoriesModalOpen: false, editProductModalOpen: false, editProduct: { id: '', name_product: '', category_id: '', price: '', stock_quantity: '', image_url: '', image_hover_url: '', image_detail_1_url: '', image_detail_2_url: '' } }">
+<div x-data="{ addProductModalOpen: false, manageCategoriesModalOpen: false, editProductModalOpen: false, editProduct: { id: '', name_product: '', category_id: '', price: '', stock_quantity: '', color: '', size: '', image_url: '', image_hover_url: '', image_detail_1_url: '', image_detail_2_url: '' } }">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Products Management</h1>
         <div class="flex space-x-3">
@@ -81,7 +81,7 @@
                         @endif
                     </td>
                     <td class="p-4 pr-6 text-right space-x-2 flex justify-end">
-                        <button @click="editProduct = { id: {{ $product->product_id }}, name_product: '{{ addslashes($product->name_product) }}', category_id: '{{ $product->category_id }}', price: '{{ $product->price }}', stock_quantity: '{{ $product->stock_quantity }}', image_url: '{{ $product->image_url }}', image_hover_url: '{{ $product->image_hover_url }}', image_detail_1_url: '{{ $product->image_detail_1_url }}', image_detail_2_url: '{{ $product->image_detail_2_url }}' }; editProductModalOpen = true" class="text-blue-500 hover:text-blue-700 transition-colors mr-2"><i class="bi bi-pencil-fill"></i></button>
+                        <button @click="editProduct = { id: {{ $product->product_id }}, name_product: '{{ addslashes($product->name_product) }}', category_id: '{{ $product->category_id }}', price: '{{ $product->price }}', stock_quantity: '{{ $product->stock_quantity }}', color: '{{ addslashes($product->color) }}', size: '{{ addslashes($product->size) }}', image_url: '{{ $product->image_url }}', image_hover_url: '{{ $product->image_hover_url }}', image_detail_1_url: '{{ $product->image_detail_1_url }}', image_detail_2_url: '{{ $product->image_detail_2_url }}' }; editProductModalOpen = true" class="text-blue-500 hover:text-blue-700 transition-colors mr-2"><i class="bi bi-pencil-fill"></i></button>
                         <form action="{{ route('admin.products.destroy', $product->product_id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
                             @csrf
                             @method('DELETE')
@@ -175,6 +175,14 @@
                                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Stock Quantity</label>
                                 <input type="number" name="stock_quantity" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
                             </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Color (comma separated)</label>
+                                <input type="text" name="color" placeholder="e.g. Red, Black, White" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Size (comma separated)</label>
+                                <input type="text" name="size" placeholder="e.g. S, M, L, XL" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                            </div>
                         </div>
 
                         <div class="mb-4">
@@ -250,6 +258,14 @@
                             <div>
                                 <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Stock Quantity</label>
                                 <input type="number" name="stock_quantity" x-model="editProduct.stock_quantity" required class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Color (comma separated)</label>
+                                <input type="text" name="color" x-model="editProduct.color" placeholder="e.g. Red, Black, White" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Size (comma separated)</label>
+                                <input type="text" name="size" x-model="editProduct.size" placeholder="e.g. S, M, L, XL" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
                             </div>
                         </div>
 
