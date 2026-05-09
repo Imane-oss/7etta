@@ -148,7 +148,11 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/categories/{id}', [AdminController::class, 'deleteCategory'])->name('admin.categories.destroy');
 
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
-
+    Route::put('/users/{id}/admin', [AdminController::class, 'makeAdmin'])->name('admin.users.admin');
+    Route::put('/users/{id}/ban', [AdminController::class, 'toggleBan'])->name('admin.users.ban');
+    
+    Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
     Route::put('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('admin.orders.status');
 });

@@ -43,41 +43,73 @@
                     </button>
 
                     @auth
-                        {{-- Admin Store Manager Button --}}
-                        @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') || (isset(Auth::user()->role) && Auth::user()->role === 'admin') || (isset(Auth::user()->is_admin) && Auth::user()->is_admin) || Auth::user()->email === 'admin@gmail.com')
-                            <a href="{{ url('/admin/dashboard') }}" class="nav-icon-btn custom-tooltip d-none d-md-block" data-tooltip="Store Manager">
-                                <i class="bi bi-shop fs-5"></i>
-                            </a>
-                        @endif
+                    {{-- Admin Store Manager Button --}}
+                    @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') ||
+                    (isset(Auth::user()->role) && Auth::user()->role === 'admin') || (isset(Auth::user()->is_admin) &&
+                    Auth::user()->is_admin) || Auth::user()->email === 'admin@gmail.com')
+                    <a href="{{ url('/admin/dashboard') }}" class="nav-icon-btn custom-tooltip d-none d-md-block"
+                        data-tooltip="Store Manager">
+                        <i class="bi bi-shop fs-5"></i>
+                    </a>
+                    @endif
 
-                        <div class="dropdown d-none d-md-block">
-                            <button class="nav-icon-btn dropdown-toggle d-flex align-items-center gap-1" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="background: none; border: none; color: #fff;">
-                                <i class="bi bi-person fs-5"></i>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end mt-2">
-                                <li>
-                                    <div class="px-3 py-2">
-                                        <span class="d-block fw-bold text-dark" style="font-size: 14px;">{{ Auth::user()->name ?? 'User' }}</span>
-                                        <span class="text-muted small">{{ Auth::user()->email ?? '' }}</span>
-                                    </div>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="{{ url('/profile') }}"><i class="bi bi-person me-2"></i> My Profile</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/orders') }}"><i class="bi bi-box-seam me-2"></i> My Orders</a></li>
-                                
-                                <li><hr class="dropdown-divider"></li>
-                                <li>
-                                    <form method="POST" action="{{ route('logout') ?? url('/logout') }}">
-                                        @csrf
-                                        <button type="submit" class="dropdown-item text-danger border-0 bg-transparent w-100 text-start"><i class="bi bi-box-arrow-right me-2"></i> Logout</button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    @else
-                        <a href="{{ url('/login') }}" class="nav-icon-btn custom-tooltip d-none d-md-block" data-tooltip="Sign In">
+                    <div class="dropdown d-none d-md-block">
+                        <button class="nav-icon-btn dropdown-toggle d-flex align-items-center gap-1" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false"
+                            style="background: none; border: none; color: #fff;">
                             <i class="bi bi-person fs-5"></i>
-                        </a>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end mt-2">
+                            <li>
+                                <div class="px-3 py-2">
+                                    <span class="d-block fw-bold text-dark" style="font-size: 14px;">{{
+                                        Auth::user()->name ?? 'User' }}</span>
+                                    <span class="text-muted small">{{ Auth::user()->email ?? '' }}</span>
+                                </div>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="{{ url('/profile') }}"><i class="bi bi-person me-2"></i>
+                                    My Profile</a></li>
+                            @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') ||
+                            (isset(Auth::user()->role) && Auth::user()->role === 'admin') ||
+                            (isset(Auth::user()->is_admin) && Auth::user()->is_admin) ||
+                            Auth::user()->email === 'admin@gmail.com')
+
+                            <li>
+                                <a class="dropdown-item" href="{{ url('/settings') }}">
+                                    <i class="bi bi-gear me-2"></i> Settings
+                                </a>
+                            </li>
+
+                            @else
+
+                            <li>
+                                <a class="dropdown-item" href="{{ url('/orders') }}">
+                                    <i class="bi bi-box-seam me-2"></i> My Orders
+                                </a>
+                            </li>
+
+                            @endif
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') ?? url('/logout') }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="dropdown-item text-danger border-0 bg-transparent w-100 text-start"><i
+                                            class="bi bi-box-arrow-right me-2"></i> Logout</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    @else
+                    <a href="{{ url('/login') }}" class="nav-icon-btn custom-tooltip d-none d-md-block"
+                        data-tooltip="Sign In">
+                        <i class="bi bi-person fs-5"></i>
+                    </a>
                     @endauth
 
                     <a href="#" class="nav-icon-btn custom-tooltip" data-tooltip="Favorites">
@@ -147,65 +179,65 @@
     </main>
 
     <footer>
-        
-            <div class="container">
-                <div class="row">
 
-                    <div class="col-lg-4 mb-4">
-                        <div class="">
-                    <a href="/">
-                        <img src="{{ asset('images/7etta.png') }}" alt="logo" style="height:100px;">
-                    </a>
-                </div>
-                        <p>7etta is your go-to destination for premium T-shirts combining comfort quality and modern
-                            style</p>
-                        <div class="social-icons">
-                            <a href="#"><i class="bi bi-facebook"></i></a>
-                            <a href="#"><i class="bi bi-instagram"></i></a>
-                        </div>
-                    </div>
+        <div class="container">
+            <div class="row">
 
-                    <div class="col-lg-4 text-center mb-4">
-                        <h5 class="information-title">Information</h5>
-                        <ul class="information list-unstyled">
-                            <li><a href="{{ url('/contact') }}">Contact</a></li>
-                            <li><a href="{{ url('/about-us') }}">About Us</a></li>
-                            <li><a href="{{ url('/FAQ') }}">FAQ</a></li>
-                            <li><a href="{{ url('/retour') }}">PORTAIL DE RETOUR ET D'ECHANGE</a></li>
-                            <li><a href="{{ url('/politique') }}">POLITIQUE DE CONFIDENTIALITE</a></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-lg-4 text-center">
-                        <h5 class="contact-title">Contact Us</h5>
-                        <p>Have a question or need help? Our team is here for you</p>
-                        <a href="mailto:contact@T4life.co" class="contact-btn">
-                            <i class="bi bi-envelope"></i> 7etta.com
+                <div class="col-lg-4 mb-4">
+                    <div class="">
+                        <a href="/">
+                            <img src="{{ asset('images/7etta.png') }}" alt="logo" style="height:100px;">
                         </a>
                     </div>
- 
+                    <p>7etta is your go-to destination for premium T-shirts combining comfort quality and modern
+                        style</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="bi bi-facebook"></i></a>
+                        <a href="#"><i class="bi bi-instagram"></i></a>
+                    </div>
                 </div>
-            </div>
 
-            <div class="copyright">
-                © 2026 7etta. All rights reserved.
+                <div class="col-lg-4 text-center mb-4">
+                    <h5 class="information-title">Information</h5>
+                    <ul class="information list-unstyled">
+                        <li><a href="{{ url('/contact') }}">Contact</a></li>
+                        <li><a href="{{ url('/about-us') }}">About Us</a></li>
+                        <li><a href="{{ url('/FAQ') }}">FAQ</a></li>
+                        <li><a href="{{ url('/retour') }}">PORTAIL DE RETOUR ET D'ECHANGE</a></li>
+                        <li><a href="{{ url('/politique') }}">POLITIQUE DE CONFIDENTIALITE</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 text-center">
+                    <h5 class="contact-title">Contact Us</h5>
+                    <p>Have a question or need help? Our team is here for you</p>
+                    <a href="mailto:contact@T4life.co" class="contact-btn">
+                        <i class="bi bi-envelope"></i> 7etta.com
+                    </a>
+                </div>
+
             </div>
+        </div>
+
+        <div class="copyright">
+            © 2026 7etta. All rights reserved.
+        </div>
     </footer>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-    let btn = document.getElementById("searchToggle");
-    let bar = document.getElementById("searchBar");
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let btn = document.getElementById("searchToggle");
+            let bar = document.getElementById("searchBar");
 
-    if (btn && bar) {
-        btn.addEventListener("click", function () {
-            bar.style.display = (bar.style.display === "block") ? "none" : "block";
+            if (btn && bar) {
+                btn.addEventListener("click", function () {
+                    bar.style.display = (bar.style.display === "block") ? "none" : "block";
+                });
+            }
         });
-    }
-});
-        </script>
+    </script>
 
     @stack('scripts')
 

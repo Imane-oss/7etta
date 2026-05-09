@@ -55,6 +55,16 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            if (Auth::user()->is_banned) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return back()->withErrors([
+                    'email' => 'Your account has been banned. Please contact support.',
+                ])->onlyInput('email');
+            }
+
             $request->session()->regenerate();
 
             return redirect()->intended('/');

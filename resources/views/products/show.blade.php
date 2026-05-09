@@ -30,7 +30,18 @@
                         </div>
 
                         <div class="product-thumbs">
-                            <img src="{{ \Illuminate\Support\Str::startsWith($product->image_url, ['http://', 'https://']) ? $product->image_url : asset($product->image_url) }}" alt="Thumbnail" class="active" onclick="switchImage(this)">
+                            @if($product->image_url)
+                                <img src="{{ \Illuminate\Support\Str::startsWith($product->image_url, ['http://', 'https://']) ? $product->image_url : asset($product->image_url) }}" alt="Thumbnail" class="active" onclick="switchImage(this)">
+                            @endif
+                            @if($product->image_hover_url)
+                                <img src="{{ \Illuminate\Support\Str::startsWith($product->image_hover_url, ['http://', 'https://']) ? $product->image_hover_url : asset($product->image_hover_url) }}" alt="Thumbnail" onclick="switchImage(this)">
+                            @endif
+                            @if($product->image_detail_1_url)
+                                <img src="{{ \Illuminate\Support\Str::startsWith($product->image_detail_1_url, ['http://', 'https://']) ? $product->image_detail_1_url : asset($product->image_detail_1_url) }}" alt="Thumbnail" onclick="switchImage(this)">
+                            @endif
+                            @if($product->image_detail_2_url)
+                                <img src="{{ \Illuminate\Support\Str::startsWith($product->image_detail_2_url, ['http://', 'https://']) ? $product->image_detail_2_url : asset($product->image_detail_2_url) }}" alt="Thumbnail" onclick="switchImage(this)">
+                            @endif
                         </div>
                     </div>
                 </div>

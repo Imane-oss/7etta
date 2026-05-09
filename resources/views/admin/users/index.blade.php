@@ -12,6 +12,17 @@
     </form>
 </div>
 
+@if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span class="block sm:inline">{{ session('success') }}</span>
+    </div>
+@endif
+@if(session('error'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <span class="block sm:inline">{{ session('error') }}</span>
+    </div>
+@endif
+
 <!-- Users Table -->
 <div class="glass-card overflow-hidden">
     <table class="w-full text-left border-collapse">
@@ -52,17 +63,36 @@
                     @endif
                 </td>
                 <td class="p-4">
+                    @if($user->is_banned)
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 border border-red-200 shadow-sm">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 mr-1.5"></span> Banned
+                    </span>
+                    @else
                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span> Active
                     </span>
+                    @endif
                 </td>
-                <td class="p-4 pr-6 text-right space-x-2">
+                <td class="p-4 pr-6 text-right space-x-2 flex justify-end">
                     @if($user->role === 'admin')
                     <button class="text-sm text-gray-400 border border-gray-200 rounded px-2 py-1 bg-gray-50 cursor-not-allowed" disabled>Make Admin</button>
                     <button class="text-sm text-red-400 border border-red-100 rounded px-2 py-1 bg-red-50 cursor-not-allowed" disabled>Ban</button>
                     @else
-                    <button class="text-sm text-black hover:text-white transition-colors border border-gray-300 rounded px-2 py-1 bg-white shadow-sm hover:bg-black">Make Admin</button>
-                    <button class="text-sm text-red-600 hover:text-white transition-colors border border-red-200 rounded px-2 py-1 bg-white shadow-sm hover:bg-red-600">Ban</button>
+                    <form action="{{ route('admin.users.admin', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to make this user an Admin?');">
+                        @csrf
+                        @method('PUT')
+                        <button type="submit" class="text-sm text-black hover:text-white transition-colors border border-gray-300 rounded px-2 py-1 bg-white shadow-sm hover:bg-black">Make Admin</button>
+                    </form>
+                    
+                    <form action="{{ route('admin.users.ban', $user->id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to {{ $user->is_banned ? 'unban' : 'ban' }} this user?');">
+                        @csrf
+                        @method('PUT')
+                        @if($user->is_banned)
+                        <button type="submit" class="text-sm text-green-600 hover:text-white transition-colors border border-green-200 rounded px-2 py-1 bg-white shadow-sm hover:bg-green-600">Unban</button>
+                        @else
+                        <button type="submit" class="text-sm text-red-600 hover:text-white transition-colors border border-red-200 rounded px-2 py-1 bg-white shadow-sm hover:bg-red-600">Ban</button>
+                        @endif
+                    </form>
                     @endif
                 </td>
             </tr>

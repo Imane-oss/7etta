@@ -26,6 +26,8 @@ class Product extends Model
         'size',
         'image_url',
         'image_hover_url',
+        'image_detail_1_url',
+        'image_detail_2_url',
         'created_at',
         'updated_at',
     ];

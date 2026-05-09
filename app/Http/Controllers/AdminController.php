@@ -54,6 +54,11 @@ class AdminController extends Controller
         return view('admin.products.index', compact('products', 'categories'));
     }
 
+    public function settings()
+    {
+        return view('admin.settings');
+    }
+
     public function storeProduct(Request $request)
     {
         $request->validate([
@@ -62,13 +67,25 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_hover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_detail_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_detail_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['name_product', 'category_id', 'price', 'stock_quantity']);
         
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['image_url'] = '/storage/' . $path;
+        $images = [
+            'image' => 'image_url',
+            'image_hover' => 'image_hover_url',
+            'image_detail_1' => 'image_detail_1_url',
+            'image_detail_2' => 'image_detail_2_url'
+        ];
+        
+        foreach ($images as $input => $column) {
+            if ($request->hasFile($input)) {
+                $path = $request->file($input)->store('products', 'public');
+                $data[$column] = '/storage/' . $path;
+            }
         }
 
         Product::create($data);
@@ -86,16 +103,28 @@ class AdminController extends Controller
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_hover' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_detail_1' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'image_detail_2' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         $data = $request->only(['name_product', 'category_id', 'price', 'stock_quantity']);
 
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('products', 'public');
-            $data['image_url'] = '/storage/' . $path;
-            
-            if ($product->image_url && str_starts_with($product->image_url, '/storage/')) {
-                Storage::disk('public')->delete(str_replace('/storage/', '', $product->image_url));
+        $images = [
+            'image' => 'image_url',
+            'image_hover' => 'image_hover_url',
+            'image_detail_1' => 'image_detail_1_url',
+            'image_detail_2' => 'image_detail_2_url'
+        ];
+        
+        foreach ($images as $input => $column) {
+            if ($request->hasFile($input)) {
+                $path = $request->file($input)->store('products', 'public');
+                $data[$column] = '/storage/' . $path;
+                
+                if ($product->$column && str_starts_with($product->$column, '/storage/')) {
+                    Storage::disk('public')->delete(str_replace('/storage/', '', $product->$column));
+                }
             }
         }
 
@@ -108,8 +137,11 @@ class AdminController extends Controller
     {
         $product = Product::findOrFail($id);
         
-        if ($product->image_url && str_starts_with($product->image_url, '/storage/')) {
-            Storage::disk('public')->delete(str_replace('/storage/', '', $product->image_url));
+        $columns = ['image_url', 'image_hover_url', 'image_detail_1_url', 'image_detail_2_url'];
+        foreach ($columns as $col) {
+            if ($product->$col && str_starts_with($product->$col, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $product->$col));
+            }
         }
 
         $product->delete();
@@ -193,5 +225,31 @@ class AdminController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Order status updated successfully.');
+    }
+
+    public function makeAdmin($id)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($user->role !== 'admin') {
+            $user->update(['role' => 'admin']);
+            return redirect()->back()->with('success', 'User role updated to admin successfully.');
+        }
+
+        return redirect()->back()->with('error', 'User is already an admin.');
+    }
+
+    public function toggleBan($id)
+    {
+        $user = User::findOrFail($id);
+        
+        if ($user->role === 'admin') {
+            return redirect()->back()->with('error', 'Cannot ban an admin.');
+        }
+
+        $user->update(['is_banned' => !$user->is_banned]);
+        
+        $message = $user->is_banned ? 'User has been banned successfully.' : 'User has been unbanned successfully.';
+        return redirect()->back()->with('success', $message);
     }
 }

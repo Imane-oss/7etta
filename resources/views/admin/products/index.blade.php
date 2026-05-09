@@ -3,7 +3,7 @@
 @section('title', 'Products Management')
 
 @section('content')
-<div x-data="{ addProductModalOpen: false, manageCategoriesModalOpen: false, editProductModalOpen: false, editProduct: { id: '', name_product: '', category_id: '', price: '', stock_quantity: '' } }">
+<div x-data="{ addProductModalOpen: false, manageCategoriesModalOpen: false, editProductModalOpen: false, editProduct: { id: '', name_product: '', category_id: '', price: '', stock_quantity: '', image_url: '', image_hover_url: '', image_detail_1_url: '', image_detail_2_url: '' } }">
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-900">Products Management</h1>
         <div class="flex space-x-3">
@@ -41,7 +41,8 @@
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr class="border-b border-gray-200 bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    <th class="p-4 pl-6">Product</th>
+                    <th class="p-4 pl-6">Photo</th>
+                    <th class="p-4">Product</th>
                     <th class="p-4">Category</th>
                     <th class="p-4">Price</th>
                     <th class="p-4">Stock</th>
@@ -51,12 +52,19 @@
             <tbody class="divide-y divide-gray-100">
                 @forelse($products as $product)
                 <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="p-4 pl-6 flex items-center">
+                    <td class="p-4 pl-6">
                         @if($product->image_url)
-                        <img src="{{ $product->image_url }}" alt="{{ $product->name_product }}" class="w-10 h-10 rounded object-cover mr-3">
+                        <img src="{{ url($product->image_url) }}" 
+                             alt="{{ $product->name_product }}" 
+                             class="w-12 h-12 rounded-lg object-cover shadow-sm border border-gray-100"
+                             onerror="console.log('Failed to load image:', this.src); this.onerror=null; this.src='/images/logo.png';">
                         @else
-                        <div class="w-10 h-10 rounded bg-gray-200 flex items-center justify-center mr-3 text-gray-500"><i class="bi bi-image"></i></div>
+                        <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-400 border border-dashed border-gray-200">
+                            <i class="bi bi-image text-xl"></i>
+                        </div>
                         @endif
+                    </td>
+                    <td class="p-4">
                         <span class="font-medium text-gray-900 text-sm">{{ $product->name_product }}</span>
                     </td>
                     <td class="p-4 text-sm text-gray-700">{{ $product->category ? $product->category->name : 'N/A' }}</td>
@@ -73,7 +81,7 @@
                         @endif
                     </td>
                     <td class="p-4 pr-6 text-right space-x-2 flex justify-end">
-                        <button @click="editProduct = { id: {{ $product->product_id }}, name_product: '{{ addslashes($product->name_product) }}', category_id: '{{ $product->category_id }}', price: '{{ $product->price }}', stock_quantity: '{{ $product->stock_quantity }}' }; editProductModalOpen = true" class="text-blue-500 hover:text-blue-700 transition-colors mr-2"><i class="bi bi-pencil-fill"></i></button>
+                        <button @click="editProduct = { id: {{ $product->product_id }}, name_product: '{{ addslashes($product->name_product) }}', category_id: '{{ $product->category_id }}', price: '{{ $product->price }}', stock_quantity: '{{ $product->stock_quantity }}', image_url: '{{ $product->image_url }}', image_hover_url: '{{ $product->image_hover_url }}', image_detail_1_url: '{{ $product->image_detail_1_url }}', image_detail_2_url: '{{ $product->image_detail_2_url }}' }; editProductModalOpen = true" class="text-blue-500 hover:text-blue-700 transition-colors mr-2"><i class="bi bi-pencil-fill"></i></button>
                         <form action="{{ route('admin.products.destroy', $product->product_id) }}" method="POST" class="inline" onsubmit="return confirm('Are you sure you want to delete this product?');">
                             @csrf
                             @method('DELETE')
@@ -83,7 +91,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="p-4 text-center text-gray-500">No products found.</td>
+                    <td colspan="6" class="p-4 text-center text-gray-500">No products found.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -170,8 +178,25 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Product Image</label>
-                            <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Product Images</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Main Image</label>
+                                    <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Hover Image</label>
+                                    <input type="file" name="image_hover" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Detail Image 1</label>
+                                    <input type="file" name="image_detail_1" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Detail Image 2</label>
+                                    <input type="file" name="image_detail_2" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                                </div>
+                            </div>
                         </div>
                     </form>
                 </div>
@@ -229,8 +254,62 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-1">Product Image (leave blank to keep current)</label>
-                            <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-2 text-sm">
+                            <label class="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Product Images</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Main Image -->
+                                <div class="flex items-center space-x-4">
+                                    <template x-if="editProduct.image_url">
+                                        <div class="relative">
+                                            <img :src="editProduct.image_url.startsWith('http') || editProduct.image_url.startsWith('/') ? editProduct.image_url : '/' + editProduct.image_url" class="w-16 h-16 rounded-lg object-cover border border-gray-200 shadow-sm">
+                                            <span class="absolute -top-2 -right-2 bg-gray-100 text-gray-500 rounded-full p-1 text-[10px] border border-gray-200">Main</span>
+                                        </div>
+                                    </template>
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Main Image</label>
+                                        <input type="file" name="image" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                                    </div>
+                                </div>
+                                <!-- Hover Image -->
+                                <div class="flex items-center space-x-4">
+                                    <template x-if="editProduct.image_hover_url">
+                                        <div class="relative">
+                                            <img :src="editProduct.image_hover_url.startsWith('http') || editProduct.image_hover_url.startsWith('/') ? editProduct.image_hover_url : '/' + editProduct.image_hover_url" class="w-16 h-16 rounded-lg object-cover border border-gray-200 shadow-sm">
+                                            <span class="absolute -top-2 -right-2 bg-gray-100 text-gray-500 rounded-full p-1 text-[10px] border border-gray-200">Hover</span>
+                                        </div>
+                                    </template>
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Hover Image</label>
+                                        <input type="file" name="image_hover" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                                    </div>
+                                </div>
+                                <!-- Detail Image 1 -->
+                                <div class="flex items-center space-x-4">
+                                    <template x-if="editProduct.image_detail_1_url">
+                                        <div class="relative">
+                                            <img :src="editProduct.image_detail_1_url.startsWith('http') || editProduct.image_detail_1_url.startsWith('/') ? editProduct.image_detail_1_url : '/' + editProduct.image_detail_1_url" class="w-16 h-16 rounded-lg object-cover border border-gray-200 shadow-sm">
+                                            <span class="absolute -top-2 -right-2 bg-gray-100 text-gray-500 rounded-full p-1 text-[10px] border border-gray-200">Det 1</span>
+                                        </div>
+                                    </template>
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Detail Image 1</label>
+                                        <input type="file" name="image_detail_1" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                                    </div>
+                                </div>
+                                <!-- Detail Image 2 -->
+                                <div class="flex items-center space-x-4">
+                                    <template x-if="editProduct.image_detail_2_url">
+                                        <div class="relative">
+                                            <img :src="editProduct.image_detail_2_url.startsWith('http') || editProduct.image_detail_2_url.startsWith('/') ? editProduct.image_detail_2_url : '/' + editProduct.image_detail_2_url" class="w-16 h-16 rounded-lg object-cover border border-gray-200 shadow-sm">
+                                            <span class="absolute -top-2 -right-2 bg-gray-100 text-gray-500 rounded-full p-1 text-[10px] border border-gray-200">Det 2</span>
+                                        </div>
+                                    </template>
+                                    <div class="flex-1">
+                                        <label class="block text-[10px] text-gray-400 uppercase tracking-wider mb-1">Detail Image 2</label>
+                                        <input type="file" name="image_detail_2" accept="image/*" class="w-full border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black bg-gray-50">
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="text-[10px] text-gray-500 mt-2">Leave blank to keep current images</p>
                         </div>
                     </form>
                 </div>

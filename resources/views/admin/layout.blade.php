@@ -117,7 +117,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="sidebar-link flex items-center px-6 py-3">
+                    <a href="{{ route('admin.settings') }}" class="sidebar-link flex items-center px-6 py-3 {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                         <i class="bi bi-gear-fill mr-3 text-lg"></i>
                         <span class="font-medium">Settings</span>
                     </a>
