@@ -7,8 +7,7 @@
     <!-- Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
         <div>
-            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Store Settings</h1>
-            <p class="text-sm text-gray-500 mt-1">Manage your store preferences, payments, and brand identity.</p>
+            <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Settings</h1>
         </div>
         <button type="submit" form="settings-form" class="bg-gray-900 hover:bg-black text-white px-6 py-2.5 rounded-xl text-sm font-medium transition-all shadow-sm flex items-center gap-2 border border-transparent focus:ring-4 focus:ring-gray-200">
             <i class="bi bi-check2-circle text-lg leading-none"></i>
@@ -16,8 +15,14 @@
         </button>
     </div>
 
+    @if(session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline">{{ session('success') }}</span>
+        </div>
+    @endif
+
     <!-- Main Content -->
-    <form id="settings-form" action="#" method="POST" enctype="multipart/form-data">
+    <form id="settings-form" action="{{ route('admin.settings.update') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -36,12 +41,16 @@
                     <div class="p-6 flex flex-col sm:flex-row gap-8">
                         <div class="flex-shrink-0">
                             <div class="relative group">
-                                <div class="h-24 w-24 rounded-full bg-gray-100 border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
-                                    <i class="bi bi-person text-4xl text-gray-400"></i>
+                                <div class="h-24 w-24 rounded-full bg-black border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
+                                    @if(auth()->user()->profile_photo_path)
+                                        <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="h-full w-full object-cover">
+                                    @else
+                                        <span class="text-3xl font-bold text-white">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                                    @endif
                                 </div>
                                 <label class="absolute inset-0 flex items-center justify-center bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
                                     <i class="bi bi-camera text-xl"></i>
-                                    <input type="file" class="hidden" accept="image/*">
+                                    <input type="file" name="admin_photo" class="hidden" accept="image/*">
                                 </label>
                             </div>
                         </div>
@@ -49,11 +58,11 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Full Name</label>
-                                    <input type="text" name="admin_name" value="" placeholder="admin" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all">
+                                    <input type="text" name="admin_name" value="{{ auth()->user()->name }}" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all">
                                 </div>
                                 <div>
                                     <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Account Email</label>
-                                    <input type="email" name="admin_email" value="" placeholder="admin@example.com" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all">
+                                    <input type="email" name="admin_email" value="{{ auth()->user()->email }}" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all">
                                 </div>
                             </div>
                         </div>
@@ -72,16 +81,16 @@
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Store Name</label>
-                                <input type="text" name="store_name" value="" placeholder="7ETTA" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all placeholder-gray-400" placeholder="e.g. My Awesome Store">
+                                <input type="text" name="store_name" value="{{ $siteSettings['store_name'] ?? '7ETTA' }}" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all placeholder-gray-400">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Contact Email</label>
-                                <input type="email" name="contact_email" value="" placeholder="support@example.com" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all placeholder-gray-400" placeholder="support@example.com">
+                                <input type="email" name="contact_email" value="{{ $siteSettings['contact_email'] ?? 'support@example.com' }}" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all placeholder-gray-400">
                             </div>
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">Store Address</label>
-                            <input type="text" name="store_address" value="" placeholder="Full street address" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all placeholder-gray-400">
+                            <input type="text" name="store_address" value="{{ $siteSettings['store_address'] ?? '' }}" placeholder="Full street address" class="w-full bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:bg-white focus:border-gray-900 transition-all placeholder-gray-400">
                         </div>
                     </div>
                 </div>
@@ -163,8 +172,12 @@
                         <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3">Store Logo</label>
                         <div class="mt-1 flex justify-center px-6 pt-8 pb-8 border-2 border-gray-200 border-dashed rounded-xl hover:border-gray-400 hover:bg-gray-50 transition-colors cursor-pointer group relative">
                             <div class="space-y-2 text-center">
-                                <div class="mx-auto h-16 w-16 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
-                                    <i class="bi bi-image text-2xl text-blue-500"></i>
+                                <div class="mx-auto h-16 w-16 bg-white rounded-xl shadow-sm border border-gray-100 flex items-center justify-center mb-4 group-hover:scale-105 transition-transform overflow-hidden">
+                                    @if(isset($siteSettings['store_logo']))
+                                        <img src="{{ url($siteSettings['store_logo']) }}" class="h-full w-full object-contain">
+                                    @else
+                                        <i class="bi bi-image text-2xl text-blue-500"></i>
+                                    @endif
                                 </div>
                                 <div class="flex text-sm text-gray-600 justify-center">
                                     <span class="relative cursor-pointer rounded-md font-medium text-gray-900 focus-within:outline-none">
@@ -176,7 +189,11 @@
                             </div>
                         </div>
                         <div class="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-center">
-                            <span class="font-bold text-xl tracking-tight text-gray-900">Admin</span>
+                            @if(isset($siteSettings['store_logo']))
+                                <img src="{{ url($siteSettings['store_logo']) }}" class="h-8 object-contain">
+                            @else
+                                <span class="font-bold text-xl tracking-tight text-gray-900">{{ $siteSettings['store_name'] ?? '7ETTA' }}</span>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -33,7 +33,11 @@
 
                 <div class="position-absolute start-50 translate-middle-x">
                     <a href="/">
-                        <img src="{{ asset('images/logo.png') }}" alt="logo" style="height:100px;">
+                        @if(isset($siteSettings['store_logo']))
+                            <img src="{{ url($siteSettings['store_logo']) }}" alt="logo" style="height:100px;">
+                        @else
+                            <img src="{{ asset('images/logo.png') }}" alt="logo" style="height:100px;">
+                        @endif
                     </a>
                 </div>
 
@@ -70,27 +74,31 @@
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
-                            <li><a class="dropdown-item" href="{{ url('/profile') }}"><i class="bi bi-person me-2"></i>
-                                    My Profile</a></li>
-                            @if((isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') ||
-                            (isset(Auth::user()->role) && Auth::user()->role === 'admin') ||
-                            (isset(Auth::user()->is_admin) && Auth::user()->is_admin) ||
-                            Auth::user()->email === 'admin@gmail.com')
+                            @php
+                                $isAdmin = (isset(Auth::user()->user_role) && Auth::user()->user_role === 'Admin') ||
+                                           (isset(Auth::user()->role) && Auth::user()->role === 'admin') ||
+                                           (isset(Auth::user()->is_admin) && Auth::user()->is_admin) ||
+                                           Auth::user()->email === 'admin@gmail.com';
+                            @endphp
 
                             <li>
-                                <a class="dropdown-item" href="{{ url('/settings') }}">
-                                    <i class="bi bi-gear me-2"></i> Settings
+                                <a class="dropdown-item" href="{{ $isAdmin ? route('admin.settings') : url('/profile') }}">
+                                    <i class="bi bi-person me-2"></i> My Profile
                                 </a>
                             </li>
 
+                            @if($isAdmin)
+                            <li>
+                                <a class="dropdown-item" href="{{ route('admin.settings') }}">
+                                    <i class="bi bi-gear me-2"></i> Settings
+                                </a>
+                            </li>
                             @else
-
                             <li>
                                 <a class="dropdown-item" href="{{ url('/orders') }}">
                                     <i class="bi bi-box-seam me-2"></i> My Orders
                                 </a>
                             </li>
-
                             @endif
                             <li>
                                 <hr class="dropdown-divider">
@@ -148,7 +156,7 @@
     <!-- Sidebar Menu  -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="sidebarMenu">
         <div class="offcanvas-header">
-            <div class="sidebar-logo">7ETTA</div>
+            <div class="sidebar-logo">{{ $siteSettings['store_name'] ?? '7ETTA' }}</div>
             <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
         </div>
 
@@ -186,11 +194,14 @@
                 <div class="col-lg-4 mb-4">
                     <div class="">
                         <a href="/">
-                            <img src="{{ asset('images/7etta.png') }}" alt="logo" style="height:100px;">
+                            @if(isset($siteSettings['store_logo']))
+                                <img src="{{ url($siteSettings['store_logo']) }}" alt="logo" style="height:100px;">
+                            @else
+                                <img src="{{ asset('images/7etta.png') }}" alt="logo" style="height:100px;">
+                            @endif
                         </a>
                     </div>
-                    <p>7etta is your go-to destination for premium T-shirts combining comfort quality and modern
-                        style</p>
+                    <p>{{ $siteSettings['store_name'] ?? '7etta' }} is your go-to destination for premium T-shirts combining comfort quality and modern style</p>
                     <div class="social-icons">
                         <a href="#"><i class="bi bi-facebook"></i></a>
                         <a href="#"><i class="bi bi-instagram"></i></a>
@@ -211,8 +222,8 @@
                 <div class="col-lg-4 text-center">
                     <h5 class="contact-title">Contact Us</h5>
                     <p>Have a question or need help? Our team is here for you</p>
-                    <a href="mailto:contact@T4life.co" class="contact-btn">
-                        <i class="bi bi-envelope"></i> 7etta.com
+                    <a href="mailto:{{ $siteSettings['contact_email'] ?? 'contact@T4life.co' }}" class="contact-btn">
+                        <i class="bi bi-envelope"></i> {{ $siteSettings['contact_email'] ?? '7etta.com' }}
                     </a>
                 </div>
 

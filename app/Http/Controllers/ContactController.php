@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Mail\ContactMail;
 use Illuminate\Support\Facades\Mail;
 use Resend\Laravel\Facades\Resend;
+use Illuminate\Support\Facades\Storage;
 
 class ContactController extends Controller
 {
@@ -24,11 +25,35 @@ class ContactController extends Controller
         ]);
 
         try {
-            // 2. Send email using Resend Facade
+            $settingsFile = 'settings.json';
+            $settings = Storage::exists($settingsFile) ? json_decode(Storage::get($settingsFile), true) : [];
+            $contactEmail = $settings['contact_email'] ?? '7etta26@gmail.com';
+            $storeName = $settings['store_name'] ?? '7ETTA';
+
+            // 2. Save to JSON file
+            $messagesFile = 'messages.json';
+            $messages = Storage::exists($messagesFile) ? json_decode(Storage::get($messagesFile), true) : [];
+            
+            $newMessage = [
+                'id' => uniqid(),
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'subject' => $validated['subject'],
+                'message' => $validated['message'],
+                'read' => false,
+                'replied' => false,
+                'reply' => null,
+                'created_at' => now()->toDateTimeString(),
+            ];
+
+            $messages[] = $newMessage;
+            Storage::put($messagesFile, json_encode($messages));
+
+            // 3. Send notification email using Resend Facade
             Resend::emails()->send([
-                'from' => '7ETTA <contact@7etta.com>',
-                'to' => ['7etta26@gmail.com'],
-                'subject' => '[Contact Form] ' . $validated['subject'],
+                'from' => $storeName . ' <contact@7etta.com>',
+                'to' => [$contactEmail],
+                'subject' => '[New Message] ' . $validated['subject'],
                 'html' => view('emails.contact', [
                     'name' => $validated['name'],
                     'email' => $validated['email'],
@@ -37,12 +62,12 @@ class ContactController extends Controller
                 ])->render(),
             ]);
 
-            return back()->with('success', '✅ Message sent successfully via Resend!');
+            return back()->with('success', '✅ Message sent successfully!');
 
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', '❌ Email failed: ' . $e->getMessage());
+                ->with('error', '❌ Error: ' . $e->getMessage());
         }
     }
 }

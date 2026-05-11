@@ -76,8 +76,12 @@
     <aside class="w-64 bg-white border-r border-gray-200 flex-shrink-0 flex flex-col h-full z-20 shadow-sm relative">
         <!-- Logo -->
         <div class="h-16 flex items-center px-6 border-b border-gray-100">
-            <i class="bi bi-shop text-gray-500 text-2xl mr-2"></i>
-            <span class="text-xl font-bold text-gray-900 tracking-tight">Admin</span>
+            @if(isset($siteSettings['store_logo']))
+                <img src="{{ url($siteSettings['store_logo']) }}" class="h-8 object-contain mr-2">
+            @else
+                <i class="bi bi-shop text-gray-500 text-2xl mr-2"></i>
+            @endif
+            <span class="text-xl font-bold text-gray-900 tracking-tight">{{ $siteSettings['store_name'] ?? 'Admin' }}</span>
         </div>
 
         <!-- Navigation -->
@@ -111,9 +115,12 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="sidebar-link flex items-center px-6 py-3">
+                    <a href="{{ route('admin.messages') }}" class="sidebar-link flex items-center px-6 py-3 {{ request()->routeIs('admin.messages*') ? 'active' : '' }}">
                         <i class="bi bi-envelope-fill mr-3 text-lg"></i>
-                        <span class="font-medium">Messages</span>
+                        <span class="font-medium flex-1">Messages</span>
+                        @if(isset($unreadMessagesCount) && $unreadMessagesCount > 0)
+                            <span class="bg-blue-600 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $unreadMessagesCount }}</span>
+                        @endif
                     </a>
                 </li>
                 <li>
@@ -143,11 +150,14 @@
                 <div x-data="{ open: false }" class="relative">
                     <button @click="open = !open" @click.away="open = false"
                         class="flex items-center space-x-2 focus:outline-none group">
-                        <div
-                            class="h-8 w-8 rounded-full bg-black flex items-center justify-center text-white font-bold text-sm transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-md">
-                            AU
+                        <div class="h-8 w-8 rounded-full bg-black flex items-center justify-center text-white font-bold text-sm transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-md overflow-hidden">
+                            @if(auth()->user()->profile_photo_path)
+                                <img src="{{ Storage::url(auth()->user()->profile_photo_path) }}" class="h-full w-full object-cover">
+                            @else
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            @endif
                         </div>
-                        <span class="text-sm font-medium text-gray-700 hidden md:block transition-colors duration-300 group-hover:text-black">Admin User <i
+                        <span class="text-sm font-medium text-gray-700 hidden md:block transition-colors duration-300 group-hover:text-black">{{ auth()->user()->name }} <i
                                 class="bi bi-chevron-down text-xs ml-1 transition-transform duration-300" :class="{'rotate-180': open}"></i></span>
                     </button>
 
@@ -158,9 +168,9 @@
                         x-transition:leave-start="transform opacity-100 scale-100"
                         x-transition:leave-end="transform opacity-0 scale-95"
                         class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i
+                        <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i
                                 class="bi bi-person mr-2"></i> Profile</a>
-                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i
+                        <a href="{{ route('admin.settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"><i
                                 class="bi bi-gear mr-2"></i> Settings</a>
                         <div class="border-t border-gray-100 my-1"></div>
                         <form method="POST" action="{{ route('logout') }}">

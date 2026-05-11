@@ -152,7 +152,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::put('/users/{id}/ban', [AdminController::class, 'toggleBan'])->name('admin.users.ban');
     
     Route::get('/settings', [AdminController::class, 'settings'])->name('admin.settings');
+    Route::put('/settings', [AdminController::class, 'updateSettings'])->name('admin.settings.update');
     
     Route::get('/orders', [AdminController::class, 'orders'])->name('admin.orders');
     Route::put('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('admin.orders.status');
+
+    Route::get('/messages', [\App\Http\Controllers\AdminMessageController::class, 'index'])->name('admin.messages');
+    Route::get('/messages/{id}', [\App\Http\Controllers\AdminMessageController::class, 'show'])->name('admin.messages.show');
+    Route::post('/messages/{id}/reply', [\App\Http\Controllers\AdminMessageController::class, 'reply'])->name('admin.messages.reply');
 });

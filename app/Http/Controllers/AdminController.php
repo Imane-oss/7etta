@@ -59,6 +59,56 @@ class AdminController extends Controller
         return view('admin.settings');
     }
 
+    public function updateSettings(Request $request)
+    {
+        $admin = auth()->user();
+
+        $request->validate([
+            'admin_name' => 'required|string|max:255',
+            'admin_email' => 'required|email|unique:users,email,' . $admin->id,
+            'admin_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'store_name' => 'nullable|string|max:255',
+            'contact_email' => 'nullable|email|max:255',
+            'store_address' => 'nullable|string|max:500',
+            'store_logo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        // Update Admin Profile
+        $adminData = [
+            'name' => $request->admin_name,
+            'email' => $request->admin_email,
+        ];
+
+        if ($request->hasFile('admin_photo')) {
+            if ($admin->profile_photo_path) {
+                Storage::disk('public')->delete($admin->profile_photo_path);
+            }
+            $path = $request->file('admin_photo')->store('profile-photos', 'public');
+            $adminData['profile_photo_path'] = $path;
+        }
+        $admin->update($adminData);
+
+        // Update Store Settings (File-based)
+        $settingsFile = 'settings.json';
+        $settings = Storage::exists($settingsFile) ? json_decode(Storage::get($settingsFile), true) : [];
+
+        if ($request->has('store_name')) $settings['store_name'] = $request->store_name;
+        if ($request->has('contact_email')) $settings['contact_email'] = $request->contact_email;
+        if ($request->has('store_address')) $settings['store_address'] = $request->store_address;
+
+        if ($request->hasFile('store_logo')) {
+            if (isset($settings['store_logo'])) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $settings['store_logo']));
+            }
+            $path = $request->file('store_logo')->store('branding', 'public');
+            $settings['store_logo'] = '/storage/' . $path;
+        }
+
+        Storage::put($settingsFile, json_encode($settings));
+
+        return redirect()->back()->with('success', 'Settings updated successfully.');
+    }
+
     public function storeProduct(Request $request)
     {
         $request->validate([
